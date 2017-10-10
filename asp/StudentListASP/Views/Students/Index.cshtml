@@ -1,0 +1,212 @@
+﻿@model StudentListASP.Models.StudentsList
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{
+    if (!String.IsNullOrEmpty(Model.ErrMsg))
+    {
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Error!</strong> Powód: @Model.ErrMsg
+        </div>
+    }
+}
+
+@using (Html.BeginForm("Index", "Students", FormMethod.Get))
+{
+    <div class="container-fluid col-lg-12" style="margin-top:15px">
+        <div class="row-fluid">
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                <div class="short-div div-filtry">
+                    @Html.Label("Grupa", htmlAttributes: new { @class = "control-label labelka" })
+                    @Html.DropDownList("groupFilter", Model.Groups, "(GRUPA)", htmlAttributes: new { @class = " input-sm filter-input filter kontrolka", @onchange = "onFilterGroupChange(this.value)", @id = "groupFilter" })
+                </div>
+                <div class="short-div div-filtry">
+                    @Html.Label("Miasto", htmlAttributes: new { @class = "control-label labelka" })
+                    @Html.TextBox("cityFilter", Model.CurrentGroupFilter, new { @class = " input-sm filter-input filter kontrolka", @id = "cityFilter" })
+                </div>
+            </div>
+            <button type="submit" id="btnFilterClear" name="request" value="Clear" onclick="clearFilter()" class="btn btn-primary col-lg-3 col-md-3 col-sm-3 col-xs-3 przycisk">Wyczyść</button>
+            <button type="submit" value="Filter" name="request" class="btn btn-primary col-lg-3 col-md-3 col-sm-3 col-xs-3 przycisk">Filtruj</button>
+            <div class="col-lg-1"></div>
+        </div>
+    </div>
+}
+<br /><br /><br />
+<h3>Lista studentów</h3>
+
+<table class="table table-bordered table-hover col-md-12">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStudent.Groups)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStudent.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStudent.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStudent.IndexNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStudent.BirthDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStudent.BirthPlace)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.Stamp)
+            </th>*@
+    </tr>
+
+    @foreach (var item in Model.PagedStudents)
+    {
+        <tr id="@("student" + item.IDStudent)" onclick="editStudent(@item.IDStudent)">
+            <td class="student-group"> @Html.DisplayFor(modelItem => item.Groups.Name)</td>
+            <td class="student-firstname"> @Html.DisplayFor(modelItem => item.FirstName)</td>
+            <td class="student-lastname"> @Html.DisplayFor(modelItem => item.LastName)</td>
+            <td class="student-indexno"> @Html.DisplayFor(modelItem => item.IndexNo)</td>
+            <td class="student-birthdate">@Html.DisplayFor(modelItem => item.BirthDate)</td>
+            <td class="student-birthplace"> @Html.DisplayFor(modelItem => item.BirthPlace)</td>
+            @Html.HiddenFor(modelItem => item.Stamp, new { @class = "student-stamp" })
+        </tr>
+    }
+</table>
+Page @(Model.PagedStudents.PageCount < Model.PagedStudents.PageNumber ? 0 : Model.PagedStudents.PageNumber) of @Model.PagedStudents.PageCount
+
+@Html.PagedListPager(Model.PagedStudents, page => Url.Action("Index",
+new { page, CurrentGroupFilter = Model.CurrentGroupFilter, CurrentCityFilter = Model.CurrentCityFilter }))
+
+
+@using (Html.BeginForm("StudentForms", "Students"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.Label("Nazwa grupy", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.DropDownList("formGroup", Model.Groups, "(GRUPA)", htmlAttributes: new { @class = "form-control kontrolka-dolna", @id = "form-groupname", @onchange = "onFormGroupChange(this.value)" })
+                @Html.ValidationMessageFor(model => model.CurrentStudent.Groups, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentStudent.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.CurrentStudent.FirstName, new { htmlAttributes = new { @class = "form-control kontrolka-dolna", @id = "form-first-name" } })
+                @Html.ValidationMessageFor(model => model.CurrentStudent.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentStudent.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.CurrentStudent.LastName, new { htmlAttributes = new { @class = "form-control kontrolka-dolna", @id = "form-last-name" } })
+                @Html.ValidationMessageFor(model => model.CurrentStudent.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentStudent.IndexNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.CurrentStudent.IndexNo, new { htmlAttributes = new { @class = "form-control kontrolka-dolna", @id = "form-index" } })
+                @Html.ValidationMessageFor(model => model.CurrentStudent.IndexNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentStudent.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.CurrentStudent.BirthDate, new { htmlAttributes = new { @class = "form-control kontrolka-dolna", @id = "form-birth-date" } })
+                @Html.ValidationMessageFor(model => model.CurrentStudent.BirthDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentStudent.BirthPlace, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.CurrentStudent.BirthPlace, new { htmlAttributes = new { @class = "form-control kontrolka-dolna", @id = "form-birth-place" } })
+                @Html.ValidationMessageFor(model => model.CurrentStudent.BirthPlace, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.CurrentStudent.IDGroup, new { @id = "form-groupid" })
+        @Html.HiddenFor(model => model.CurrentStudent.IDStudent, new { @id = "form-studid" })
+        @Html.HiddenFor(model => model.CurrentCityFilter)
+        @Html.HiddenFor(model => model.CurrentGroupFilter)
+        @Html.HiddenFor(model => model.Page)
+        @Html.HiddenFor(model => model.CurrentStudent.Stamp, new { @id = "form-student-stamp" })
+
+
+        <div class="form-group">
+            <div class="col-md-8">
+                <div class="pull-right">
+                    <button type="submit" name="request" id="createstudent" value="Create" class="btn btn-primary przycisk-dolny">Nowy</button>
+                    <button type="submit" name="request" id="editstudent" value="Edit" class="btn btn-primary przycisk-dolny" disabled>Zapisz</button>
+                    <button type="submit" name="request" id="deletestudent" value="Delete" class="btn btn-primary przycisk-dolny" disabled>Usuń</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function onFormGroupChange(currId) {
+            $("#form-groupid").val(currId);
+        }
+
+        function onFilterGroupChange(currId) {
+            $("#form-groupid").val(currId);
+        }
+
+        function editStudent(rowId) {
+            var prnt = $("#student" + rowId);
+            console.log($("#form-groupname").val().trim());
+            console.log(prnt.find(".student-group").text().trim());
+            $("#form-groupname").val(prnt.find(".student-group").text().trim());
+
+            $("#form-first-name").val(prnt.find(".student-firstname").text().trim());
+            $("#form-last-name").val(prnt.find(".student-lastname").text().trim());
+            $("#form-index").val(prnt.find(".student-indexno").text().trim());
+            $("#form-birth-date").val(prnt.find(".student-birthdate").text().trim());
+            $("#form-birth-place").val(prnt.find(".student-birthplace").text().trim());
+            $("#form-studid").val(rowId);
+            $("#form-student-stamp").val(prnt.find(".student-stamp").val());
+
+            document.getElementById("editstudent").disabled = false;
+            document.getElementById("deletestudent").disabled = false;
+            
+        }
+
+        $.validator.addMethod('date', function (value, element) {
+            if (this.optional(element))
+                return true;
+
+            var ok = true;
+            var regEx = /^\d{4}-\d{2}-\d{2}$/;
+            if (!value.match(regEx))
+                return false;  // Invalid format
+            var d;
+            if (!((d = new Date(value)) | 0))
+                return false; // Invalid date (or this could be epoch)
+            return d.toISOString().slice(0, 10) == value;
+        });
+
+        function clearFilter() {
+            $("#groupFilter").val("");
+            $("#cityFilter").val("");
+
+        };
+    </script>
+}
