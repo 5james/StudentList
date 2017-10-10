@@ -1,0 +1,161 @@
+﻿<div class="alert alert-danger alert-dismissable" ng-show="bDisplayError">
+    <a class="close" data-dismiss="alert" aria-label="close" ng-click="dismissError()">×</a>
+    <strong>Error!</strong> Powód: {{errorMessage}}
+</div>
+
+<hr />
+<div class="tab-content">
+    <div id="studentslist" class="tab-pane fade in active">
+        <div class="container-fluid col-lg-12" style="margin-top:15px">
+            <div class="row-fluid">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <div class="short-div div-filtry">
+                        <label class="control-label labelka" for="Grupa">Grupa</label>
+                        <select class="input-sm filter-input filter kontrolka" id="groupFilter" name="groupFilter" ng-model="studentsListTable.filter().GroupName" ng-options="grps.Name as grps.Name for grps in groupsListTable.data">
+                            <option value="">(GRUPA)</option>
+                        </select>
+                    </div>
+                    <div class="short-div div-filtry">
+                        <label class="control-label labelka" for="Miasto">Miasto</label>
+                        <input class="input-sm filter-input filter kontrolka" id="cityFilter" name="cityFilter" type="text" ng-model="studentsListTable.filter().BirthPlace">
+                    </div>
+                </div>
+                <button type="submit" id="btnFilterClear" name="request" value="Clear" onclick="clearFilter()" class="btn btn-primary col-lg-3 col-md-3 col-sm-3 col-xs-3 przycisk" ng-disabled="!studentsListTable.hasFilter()" ng-click="clearFilters()">Wyczyść</button>
+                @*<button type="submit" value="Filter" name="request" class="btn btn-primary col-lg-3 col-md-3 col-sm-3 col-xs-3 przycisk">Filtruj</button>*@
+                <div class="col-lg-1"></div>
+            </div>
+        </div>
+
+        <br /><br /><br />
+        <h3>Lista studentów</h3>
+        <div class="row tebela">
+            <table class="table table-bordered table-hover col-md-12" ng-table="studentsListTable">
+                <tr ng-repeat="stud in $data" ng-click="putStudentInForms(stud.IDStudent)">
+                    <td data-title="'Grupa'" sortable="'GroupName'">
+                        {{stud.GroupName}}
+                    </td>
+                    <td data-title="'Imię'" sortable="'FirstName'">
+                        {{stud.FirstName}}
+                    </td>
+                    <td data-title="'Nazwisko'" sortable="'LastName'">
+                        {{stud.LastName}}
+                    </td>
+                    <td data-title="'Indeks'" sortable="'IndexNo'">
+                        {{stud.IndexNo}}
+                    </td>
+                    <td data-title="'Data urodzenia'" sortable="'BirthDate'">
+                        {{stud.BirthDate | date:'yyyy-MM-dd'}}
+                    </td>
+                    <td data-title="'Miejsce urodzenia'" sortable="'BirthPlace'">
+                        {{stud.BirthPlace}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="form-horizontal">
+
+            <form name=" formStudent">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Nazwa_grupy">Nazwa grupy</label>
+                    <div class="col-md-6">
+                        <select class="form-control kontrolka-dolna" id="form-groupname" name="formGroup" ng-model="selectedStudent.IDGroup" ng-options="grps.IDGroup as grps.Name for grps in groupsListTable.data"></select>
+                        <span class="field-validation-valid text-danger" data-valmsg-for="formGroup" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="CurrentStudent_FirstName">Imie</label>
+                    <div class="col-md-6">
+                        <input class="form-control kontrolka-dolna text-box single-line" data-val="true" data-val-length="Pole Imie musi być ciągiem o maksymalnej długości 20." data-val-length-max="20" data-val-required="Pole Imie jest wymagane." id="form-first-name" name="CurrentStudent.FirstName" value="" type="text" ng-model="selectedStudent.FirstName">
+                        <span class="field-validation-valid text-danger" data-valmsg-for="CurrentStudent.FirstName" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="CurrentStudent_LastName">Nazwisko</label>
+                    <div class="col-md-6">
+                        <input class="form-control kontrolka-dolna text-box single-line" data-val="true" data-val-length="Pole Nazwisko musi być ciągiem o maksymalnej długości 20." data-val-length-max="20" data-val-required="Pole Nazwisko jest wymagane." id="form-last-name" name="CurrentStudent.LastName" value="" type="text" ng-model="selectedStudent.LastName">
+                        <span class="field-validation-valid text-danger" data-valmsg-for="CurrentStudent.LastName" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="CurrentStudent_IndexNo">Indeks</label>
+                    <div class="col-md-6">
+                        <input class="form-control kontrolka-dolna text-box single-line" data-val="true" data-val-length="Pole Indeks musi być ciągiem o maksymalnej długości 10." data-val-length-max="10" data-val-required="Pole Indeks jest wymagane." id="form-index" name="CurrentStudent.IndexNo" value="" type="text" ng-model="selectedStudent.IndexNo">
+                        <span class="field-validation-valid text-danger" data-valmsg-for="CurrentStudent.IndexNo" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="CurrentStudent_BirthDate">Data urodzin</label>
+                    <div class="col-md-6">
+                        <input class="form-control kontrolka-dolna text-box single-line" data-val="true" data-val-date="Pole Data urodzin musi być datą w formie YYYY-MM-DD" id="form-birth-date" name="CurrentStudent.BirthDate" value="" type="datetime" ng-model="selectedStudent.BirthDate | date:'yyyy-MM-dd'">
+                        <span class="field-validation-valid text-danger" data-valmsg-for="CurrentStudent.BirthDate" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="CurrentStudent_BirthPlace">Miasto</label>
+                    <div class="col-md-6">
+                        <input class="form-control kontrolka-dolna text-box single-line" data-val="true" data-val-length="Pole Miasto musi być ciągiem o maksymalnej długości 32." data-val-length-max="32" id="form-birth-place" name="CurrentStudent.BirthPlace" value="" type="text" ng-model="selectedStudent.BirthPlace">
+                        <span class="field-validation-valid text-danger" data-valmsg-for="CurrentStudent.BirthPlace" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+            </form>
+
+            <div class="form-group">
+                <div class="col-md-8">
+                    <div class="pull-right">
+                        <button type="submit" name="request" id="createstudent" value="Create" class="btn btn-primary przycisk-dolny" ng-disabled="!(selectedStudent.FirstName && selectedStudent.LastName && selectedStudent.IndexNo && selectedStudent.IDGroup) ||  formStudent.$pristine" ng-click="createStudent()">Nowy</button>
+                        <button type="submit" name="request" id="editstudent" value="Edit" class="btn btn-primary przycisk-dolny" ng-disabled="!(selectedStudent.FirstName && selectedStudent.LastName && selectedStudent.IndexNo && selectedStudent.IDGroup) ||  formStudent.$pristine" ng-click="updateStudent()">Zapisz</button>
+                        <button type="submit" name="request" id="deletestudent" value="Delete" class="btn btn-primary przycisk-dolny" ng-disabled="selectedStudent.IDStudent === undefined" ng-click="deleteStudent()">Usuń</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="groupslist" class="tab-pane fade">
+
+        <h3>Lista Grup</h3>
+
+        <table class="table table-bordered table-hover col-md-12" ng-table="groupsListTable">
+            <tr ng-repeat="gr in $data"  ng-click="putGroupInForms(gr.IDGroup)">
+                <td data-title="'Nazwa'" sortable="'Name'">
+                    {{gr.Name}}
+                </td>
+            </tr>
+
+
+        </table>
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <form name="formGroup">
+                    <label class="control-label col-md-2" for="CurrentGroup_Name">Grupa</label>
+                    <div class="col-md-6">
+                        <input class="form-control kontrolka-dolna text-box single-line" data-val="true" data-val-length="Pole Grupa musi być ciągiem o maksymalnej długości 16." data-val-length-max="16" data-val-required="Pole Grupa jest wymagane." id="form-groupname-name" name="CurrentGroup.Name" value="" type="text" ng-model="selectedGroup.Name">
+                        <span class="field-validation-valid text-danger" data-valmsg-for="CurrentGroup.Name" data-valmsg-replace="true"></span>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-8">
+                    <div class="pull-right">
+                        <button type="submit" name="request" id="creategroup" value="Create" class="btn btn-primary przycisk-dolny"  ng-disabled="!(selectedGroup.Name) || formGroup.$pristine" ng-click="createGroup()">Nowa</button>
+                        <button type="submit" name="request" id="editgroup" value="Edit" class="btn btn-primary przycisk-dolny"  ng-disabled="!(selectedGroup.Name) || formGroup.$pristine" ng-click="updateGroup()" >Zapisz</button>
+                        <button type="submit" name="request" id="deletegroup" value="Delete" class="btn btn-primary przycisk-dolny" ng-disabled="selectedGroup.IDGroup === undefined" ng-click="deleteGroup()">Usuń</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
