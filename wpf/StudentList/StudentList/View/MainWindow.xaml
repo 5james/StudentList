@@ -1,0 +1,139 @@
+﻿<Window x:Class="StudentList.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentList"
+        xmlns:vm="clr-namespace:StudentList.ViewModel"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="680" MinHeight="480" MaxHeight="750" MinWidth="640" MaxWidth="900">
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        
+        <Grid Margin="5" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="labelFilterGrupa" Content="Grupa:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="0"/>
+            <Label x:Name="labelFilterMiasto" Content="Miasto:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="1"/>
+
+
+            <Button x:Name="button" Content="Filtruj" Margin="5" Grid.Column="2" Grid.RowSpan="2"
+                    Command="{Binding FilterCommand}"/>
+            <Button x:Name="button_clear" Content="Wyczyść" Margin="5" Grid.Column="3" Grid.RowSpan="2"
+                    Command="{Binding ClearCommand}"/>
+
+            <ComboBox  x:Name="comboBoxFilter" Grid.Column="1" Grid.Row="0" Margin="5" VerticalAlignment="Center"
+                       ItemsSource="{Binding Groups}" SelectedItem="{Binding Path=SelectedGroupFilter, Mode=TwoWay}"/>
+            <TextBox x:Name="textBox" Margin="5"
+                     TextWrapping="Wrap" VerticalAlignment="Center"
+                     Grid.Column="1" Grid.Row="1"
+                     Text="{Binding CityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        <ListView x:Name="listBox" Margin="5,5,5,5" Grid.Row="1"
+                 ItemsSource="{Binding Students}"
+                  SelectedItem="{Binding SelectedStudent}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Imie" Width="auto" DisplayMemberBinding="{Binding FirstName}"/>
+                    <GridViewColumn Header="Nazwisko" Width="auto" DisplayMemberBinding="{Binding LastName}"/>
+                    <GridViewColumn Header="Grupa" Width="auto" DisplayMemberBinding="{Binding Path=Group}"/>
+                    <GridViewColumn Header="Miasto" Width="auto" DisplayMemberBinding="{Binding City}"/>
+                    <GridViewColumn Header="Indeks" Width="auto" DisplayMemberBinding="{Binding IndexID}"/>
+                    <GridViewColumn Header="Data Urodzenia" Width="auto" DisplayMemberBinding="{Binding Path=DateOfBirth, StringFormat='yyyy-MM-dd'}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+        <Grid Margin="5" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+
+            <Label x:Name="labelGrupa" Content="Grupa:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="0" />
+            <Label x:Name="labelImie" Content="Imie:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="1" />
+            <Label x:Name="labelNazwisko" Content="Nazwisko:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="2" />
+            <Label x:Name="labelMiejsceUrodzenia" Content="Miejsce urodzenia:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="3" />
+            <Label x:Name="labelDataUrodzenia" Content="Data urodzenia:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="4" />
+            <Label x:Name="labelIndeks" Content="Indeks:" 
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Grid.Column="0" Grid.Row="5" />
+
+            <ComboBox x:Name="comboBoxGrupa" Margin="5" 
+                       Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4"
+                      ItemsSource="{Binding Groups}" SelectedItem="{Binding Path=SelectedGroup, Mode=TwoWay}"/>
+            <TextBox x:Name="textBoxImie" Margin="5"
+                     TextWrapping="Wrap" 
+                     Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4"
+                     Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox x:Name="textBoxNazwisko" Margin="5"
+                     TextWrapping="Wrap"
+                     Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4"
+                     Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox x:Name="textBoxMiejsceUrodzenia" Margin="5"
+                     TextWrapping="Wrap"
+                     Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="4"
+                     Text="{Binding City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <DatePicker x:Name="dateBoxDataUrodzenia" Margin="5"
+                     Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4"
+                     SelectedDate="{Binding Path=DateOfBirth, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"/>
+            <TextBox x:Name="textBoxIndeks" Margin="5"
+                     TextWrapping="Wrap"
+                     Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="4"
+                     Text="{Binding IndexID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+            <Button x:Name="buttonNowy" Content="Nowy" Grid.Column="2" Margin="2" Grid.Row="6"
+                    Command="{Binding CreateCommand}"/>
+            <Button x:Name="buttonZapisz" Content="Zapisz" Grid.Column="3" Margin="2" Grid.Row="6"
+                    Command="{Binding UpdateCommand}"/>
+            <Button x:Name="buttonUsun" Content="Usun" Grid.Column="4" Margin="2" Grid.Row="6"
+                    Command="{Binding DeleteCommand}"/>
+        </Grid>
+    </Grid>
+</Window>
